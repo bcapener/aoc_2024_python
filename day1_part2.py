@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 from day1_part1 import read_data
 

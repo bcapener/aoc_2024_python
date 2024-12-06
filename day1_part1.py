@@ -4,9 +4,9 @@ from pathlib import Path
 
 def read_data(path: Path):
     input_data_lines = path.read_text().splitlines()
-    input_data_str_pairs = (l.split(None, maxsplit=1) for l in input_data_lines)
-    input_data_int_pairs = ((int(l[0]), int(l[1])) for l in input_data_str_pairs)
-    return input_data_int_pairs
+    gen_list_of_strs = (line.split() for line in input_data_lines)
+    gen_tuple_of_ints = (tuple(int(number) for number in paris) for paris in gen_list_of_strs)
+    return gen_tuple_of_ints
 
 def main(path: Path):
     input_data_int_pairs = read_data(path)
