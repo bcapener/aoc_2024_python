@@ -3,42 +3,53 @@ import sys
 from pathlib import Path
 from day1_part1 import read_data
 
+def filter_report(report: tuple[int], skip_level):
+    if skip_level == 0:
+        prev_level = report[1]
+        report = report[2:]
+        skip_level = None  # level 0 already filtered out, disable further filtering.
+    else:
+        prev_level = report[0]
+        report = report[1:]
 
-def is_report_safe(report: tuple[int]):
+    for i, level in enumerate(report, start=1):
+        if i == skip_level:
+            continue
+
+        yield prev_level, level
+
+        prev_level = level
+
+
+def generate_filtered_reports(report: tuple[int]):
     skip_levels = [None] + list(range(len(report)))
-    is_safe = False
 
     for skip_level in skip_levels:
-        prev_level: int|None = None
+        yield filter_report(report, skip_level)
+
+def is_report_safe(report: tuple[int]):
+    is_safe = False
+
+    for filtered_report in generate_filtered_reports(report):
         is_increasing: bool|None = None
 
         is_safe = True
+        for prev_level, level in filtered_report:
 
-        for i, level in enumerate(report):
-            if i == skip_level:
-                continue
+            step = abs(level - prev_level)
+            if 3 < step or step < 1:
+                is_safe = False
+                break
 
-            is_first_level = prev_level is None
-            is_second_level = prev_level is not None and is_increasing is None
-            is_other_levels = not is_first_level and not is_second_level
-
-            if not is_first_level:
-                step = abs(level - prev_level)
-                if 3 < step or step < 1:
-                    is_safe = False
-                    break
-
-            if is_second_level:
+            if is_increasing is None:
                 is_increasing = level > prev_level
-            elif is_other_levels:
+            else:
                 if is_increasing and level < prev_level:
                     is_safe = False
                     break
                 if not is_increasing and level > prev_level:
                     is_safe = False
                     break
-
-            prev_level = level
 
         if is_safe:
             break
