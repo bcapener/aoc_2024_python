@@ -25,29 +25,29 @@ class WordSearch:
     def find_word_right(self, row, col, word):
         if col + len(word) > self.number_of_cols:
             return False
-        found_word = "".join(self.data[row][c] for c in range(col, col + len(word)))
+        found_word = "".join(self.data[row][col + offset] for offset in range(len(word)))
         return found_word == word
 
     def find_word_left(self, row, col, word):
-        if col - len(word) + 1 < 0:
+        if col < len(word) - 1:
             return False
-        found_word = "".join(self.data[row][c] for c in range(col, col - len(word), -1))#[::-1]
+        found_word = "".join(self.data[row][col - offset] for offset in range(len(word)))
         return found_word == word
 
     def find_word_up(self, row, col, word):
         if row - len(word) + 1 < 0:
             return False
         found_word = ""
-        for r in range(row, row - len(word), -1):
-            found_word += self.data[r][col]
+        for offset in range(len(word)):
+            found_word += self.data[row - offset][col]
         return found_word == word
 
     def find_word_down(self, row, col, word):
         if row + len(word) > self.number_of_rows:
             return False
         found_word = ""
-        for r in range(row, row + len(word)):
-            found_word += self.data[r][col]
+        for offset in range(len(word)):
+            found_word += self.data[row + offset][col]
         return found_word == word
 
     def find_word_down_right(self, row, col, word):
@@ -63,11 +63,11 @@ class WordSearch:
     def find_word_down_left(self, row, col, word):
         if row + len(word) > self.number_of_rows:
             return False
-        if col - len(word) + 1 < 0:
+        if col < len(word) - 1:
             return False
         found_word = ""
         for offset in range(len(word)):
-            found_word += self.data[row - offset][col - offset]
+            found_word += self.data[row + offset][col - offset]
         return found_word == word
 
     def find_word_up_right(self, row, col, word):
